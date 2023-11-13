@@ -41,7 +41,7 @@ const options = {
     onClose(selectedDates) {
         userInputTime = selectedDates[0].getTime();
         if (userInputTime > new Date()) {
-            setStartBtnActivity(true);
+            setElementActivity(elements.startBtn, true);
             remainingTime = userInputTime - new Date();            
         } else {
             showAlert('Please choose a date in the future');            
@@ -60,11 +60,11 @@ function showAlert(messageText) {
     });
 }
 
-function setStartBtnActivity(isTurningOn) {
+function setElementActivity(element, isTurningOn) {
     if (isTurningOn) {
-        elements.startBtn.removeAttribute(DISABLED);
+        element.removeAttribute(DISABLED);
     } else {
-        elements.startBtn.setAttribute(DISABLED, "");
+        element.setAttribute(DISABLED, "");
     }
 }
 
@@ -89,11 +89,12 @@ const updateTimer = () => {
     remainingTime -= 1000;
     if (remainingTime <= 0) {
         stopTimer();
+        setElementActivity(elements.dateTextInput, true);
     }
 }
 
 
-setStartBtnActivity(false);
+setElementActivity(elements.startBtn, false);
 const fp = flatpickr(elements.dateTextInput, options);
 
 const onStartBtnClick = () => {
@@ -102,7 +103,8 @@ const onStartBtnClick = () => {
     } else {
         showAlert('Choosen date is out, set another date in the future');
     }    
-    setStartBtnActivity(false);
+    setElementActivity(elements.startBtn, false);
+    setElementActivity(elements.dateTextInput, false);
 }
 
 elements.startBtn.addEventListener("click", onStartBtnClick);
