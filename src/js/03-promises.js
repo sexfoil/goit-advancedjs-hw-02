@@ -22,6 +22,7 @@ function getValidationMessage(name, value) {
   return `'${name}' must be not empty and more than ${value}!`;
 } 
 
+const DISABLED = "disabled";
 const elements = {
   delay: document.querySelector('[name="delay"]'),
   step: document.querySelector('[name="step"]'),
@@ -71,6 +72,22 @@ function isInputValid({ delay, step, amount }) {
   }
 }
 
+function cleanUserInput() {
+  elements.delay.value = '';
+  elements.step.value = '';
+  elements.amount.value = '';
+}
+
+function temporaryDisableCreateBtn() {
+  const btn = elements.button;
+  const time = Number(elements.delay.value) + Number(elements.step.value) * Number(elements.amount.value);
+  console.log(time);
+  btn.setAttribute(DISABLED, "");
+  setTimeout(() => {
+    btn.removeAttribute(DISABLED);
+  }, time);
+}
+
 const onButtonClick = (evt) => {
   evt.preventDefault();
   
@@ -81,6 +98,9 @@ const onButtonClick = (evt) => {
   }
 
   if (isInputValid(userInput)) {
+    temporaryDisableCreateBtn();
+    cleanUserInput();
+
     for (let position = 1; position <= Number(userInput.amount); position += 1) {
       const delay = Number(userInput.delay) + (position - 1) * Number(userInput.step);
       createPromise(position, delay)
